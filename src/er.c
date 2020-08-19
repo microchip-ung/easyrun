@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#define ER_VERSION "v0.1"
+#include "version.h"
 
 FILE *log_file;
 
@@ -570,7 +570,7 @@ void handle_signals(int fd) {
 }
 
 void print_version() {
-    printf("er version: %s\n", ER_VERSION);
+    printf("er version: %s\n", gGIT_VERSION);
 }
 
 int usage(int res) {
