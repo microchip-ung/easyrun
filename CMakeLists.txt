@@ -7,4 +7,6 @@ include_directories(src)
 
 add_executable(er src/er.c)
 
-install(TARGETS er DESTINATION bin)
+add_executable(base64decode src/base64decode.c)
+
+install(TARGETS er base64decode DESTINATION bin)
