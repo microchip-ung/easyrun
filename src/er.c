@@ -446,6 +446,14 @@ void copy_buf_to_buf(struct fddata *from, struct fddata *to,
             line_size = MIN(line_size, LINE_SIZE_MAX);
             copy_to_tx = 1;
 
+        } else if (from->fd == -1) {
+            /* Source pipe closed, make sure we clean the pipe even if there is
+             * no newline.
+             */
+            prefix_size = snprintf(prefix_buf, PREFIX_SIZE, "ER-L-%05d-%s-%s ",
+                                   pid, ts(ts_buf, 32), prefix_msg_buf);
+            copy_to_tx = 1;
+
         } else if (line_timeout(from)) {
             prefix_size = snprintf(prefix_buf, PREFIX_SIZE, "ER-T-%05d-%s-%s ",
                                    pid, ts(ts_buf, 32), prefix_msg_buf);
