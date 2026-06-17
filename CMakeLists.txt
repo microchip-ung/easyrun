@@ -1,6 +1,6 @@
 project(easyframes)
 
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.20)
 
 add_definitions(-Wall)
 include_directories(src)
@@ -12,7 +12,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_P
 # Make a version file containing the current version from git.
 #
 include(GetGitRevisionDescription)
-git_describe(VERSION --tags --dirty=-dirty)
+git_describe(VERSION --tags --always --dirty=-dirty)
 
 #parse the version information into pieces.
 string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")

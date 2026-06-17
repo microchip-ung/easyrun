@@ -640,7 +640,7 @@ int main(int argc, char *const argv[], char *const envp[]) {
                 break;
 
             case 'l':
-                strncpy(lockfile_path, optarg, 1024);
+                strncpy(lockfile_path, optarg, sizeof(lockfile_path) - 1);
                 lockfile = 1;
                 break;
 
