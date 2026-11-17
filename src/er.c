@@ -26,6 +26,7 @@
 #include <sys/file.h>
 #include <sys/wait.h>
 #include <assert.h>
+#include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -228,10 +229,12 @@ void pr(const char *msg, const char *fmt, ...) {
 
 
 int report_error(const char *c) {
+    fprintf(stderr, "er: %s\n", c);
     return -1;
 }
 
 int report_perror(const char *c) {
+    fprintf(stderr, "er: %s: %s\n", c, strerror(errno));
     return -1;
 }
 
@@ -253,7 +256,14 @@ int child(int argc, char *const argv[], char *const envp[]) {
     (void)dup2(pipe_stdout[1], STDOUT_FILENO);
     (void)dup2(pipe_stderr[1], STDERR_FILENO);
 
-    return execvpe(argv[0], argv, envp);
+    execvpe(argv[0], argv, envp);
+
+    // Only reached if the exec failed. stderr is already the pipe to the
+    // parent, which relays this as a STDERR line; without it the caller sees
+    // nothing but exit 255. _exit: this is a forked copy of the parent.
+    dprintf(STDERR_FILENO, "er: cannot execute '%s': %s\n", argv[0],
+            strerror(errno));
+    _exit(255);
 }
 
 int select_fd(int *nfds, fd_set *fds, struct fddata *fdd) {
